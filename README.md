@@ -13,8 +13,7 @@ The robot is configured with the following components:
 - **Drivetrain**:  
   - 2-motor drive  
   - 4-inch wheels  
-  - 18:1 gear ratio  
-  - Wheelbase: 295 mm wide, 40 mm long  
+  - 200 rpm gear ratio    
 
 - **Arm System**:  
   - `arm_motor` (Port 13) – controls vertical lift for placing objects  

@@ -1,0 +1,228 @@
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/*    Module:       main.cpp                                                  */
+/*    Author:       VEX                                                       */
+/*    Created:      Thu Sep 26 2019                                           */
+/*    Description:  Competition Template                                      */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Drivetrain           drivetrain    10, 9           
+// arm_motor            motor         13              
+// claw_motor           motor         14              
+// Grabber              motor         6               
+// Controller1          controller                    
+// ---- END VEXCODE CONFIGURED DEVICES ----
+
+#include "vex.h"
+
+using namespace vex;
+
+double leftstick_y;
+int deadzone;
+double rightstick_x;
+bool button_L1;
+bool button_L2;
+bool button_R1;
+bool button_R2;
+bool button_x;
+bool button_b;
+
+
+// A global instance of competition
+competition Competition;
+
+// define your global instances of motors and other devices here
+
+/*---------------------------------------------------------------------------*/
+/*                          Pre-Autonomous Functions                         */
+/*                                                                           */
+/*  You may want to perform some actions before the competition starts.      */
+/*  Do them in the following function.  You must return from this function   */
+/*  or the autonomous and usercontrol tasks will not be started.  This       */
+/*  function is only called once after the V5 has been powered on and        */
+/*  not every time that the robot is disabled.                               */
+/*---------------------------------------------------------------------------*/
+
+void pre_auton(void) {
+  // Initializing Robot Configuration. DO NOT REMOVE!
+  vexcodeInit();
+
+  // All activities that occur before the competition starts
+  // Example: clearing encoders, setting servo positions, ...
+}
+
+/*---------------------------------------------------------------------------*/
+/*                                                                           */
+/*                              Autonomous Task                              */
+/*                                                                           */
+/*  This task is used to control your robot during the autonomous phase of   */
+/*  a VEX Competition.                                                       */
+/*                                                                           */
+/*  You must modify the code to add your own robot specific commands here.   */
+/*---------------------------------------------------------------------------*/
+
+void autonomous(void) {
+
+  
+    arm_motor.setStopping(hold);
+    arm_motor.spinFor(forward,460,degrees);
+    Drivetrain.setDriveVelocity(60,percent);
+    Drivetrain.driveFor(forward, 28, inches);
+    claw_motor.setVelocity(90,percent);
+    claw_motor.spinFor(forward, 560,degrees);
+    wait(40, msec);
+    arm_motor.spinFor(reverse,250,degrees);
+    //changed it from 300 to 250
+    claw_motor.spinFor(reverse, 560,degrees);
+    wait(40, msec);
+    // code for RED BACK starts here
+  
+     Drivetrain.driveFor(reverse, 15, inches);
+    //to turn and reach the next pole
+    //Drivetrain.turnFor(left, 165, degrees);
+    //arm_motor.spinFor(forward,15,degrees);
+    //Drivetrain.driveFor(forward, 16.5, inches); 
+    //Drivetrain.driveFor(reverse, 1, inches);
+    //to pick the pole
+    //arm_motor.spinFor(reverse,300,degrees);
+    //wait(40, msec);
+    //arm_motor.spinFor(forward,480,degrees);
+    //retrieve and go back to the goal
+    //Drivetrain.driveFor(reverse, 19, inches);
+    //Drivetrain.turnFor(right, 170, degrees);
+    //Drivetrain.driveFor(forward, 14, inches);
+    // place the pole in the goal
+    //claw_motor.spinFor(forward, 560,degrees);
+    //wait(20, msec);
+    //claw_motor.spinFor(reverse, 560,degrees);
+
+
+
+  // ..........................................................................
+  // Insert autonomous user code here.
+  // ..........................................................................
+}
+
+/*---------------------------------------------------------------------------*/
+/*                                                                           */
+/*                              User Control Task                            */
+/*                                                                           */
+/*  This task is used to control your robot during the user control phase of */
+/*  a VEX Competition.                                                       */
+/*                                                                           */
+/*  You must modify the code to add your own robot specific commands here.   */
+/*---------------------------------------------------------------------------*/
+
+void usercontrol(void) {
+  // User control code here, inside the loop
+  while (1) 
+  {
+    arm_motor.setStopping(hold);
+    
+    leftstick_y=Controller1.Axis3.position(percent);
+    deadzone=5;
+    rightstick_x = Controller1.Axis1.position(percent);
+    button_L1 = Controller1.ButtonL1.pressing();
+    button_L2 = Controller1.ButtonL2.pressing();
+    button_R1 = Controller1.ButtonR1.pressing();
+    button_R2 = Controller1.ButtonR2.pressing();
+    button_x = Controller1.ButtonX.pressing();
+    button_b = Controller1.ButtonB.pressing();
+    // To go forward
+    if(fabs(leftstick_y)>deadzone)
+    {
+    Drivetrain.setDriveVelocity(leftstick_y,percent);
+    Drivetrain.drive(forward);
+    }
+   // to turn
+    else if(fabs(rightstick_x)>deadzone)
+    {
+    Drivetrain.setTurnVelocity(rightstick_x,percent);
+    Drivetrain.turn(right);
+    }
+    else
+    {
+      Drivetrain.stop();
+
+    }
+    //Arm up/Down
+    if (button_L1==true||button_L2){
+      if(button_L1==true)
+      {
+        arm_motor.setVelocity(50,percent);
+        arm_motor.spin(forward);
+      }
+      if(button_L2==true)
+      {
+        arm_motor.setVelocity(50,percent);
+        arm_motor.spin(reverse);
+      }
+    }
+      else
+      {
+        arm_motor.stop();
+      }
+    
+        //Claw up/Down
+    if (button_R1==true||button_R2){
+      if(button_R1==true)
+      {
+        claw_motor.setVelocity(50,percent);
+        claw_motor.spin(forward);
+      }
+      if(button_R2==true)
+      {
+        claw_motor.setVelocity(50,percent);
+        claw_motor.spin(reverse);
+      }
+    }
+      else
+      {
+        claw_motor.stop();
+      }
+
+      //Grabber up/down
+      if (button_x==true||button_b){
+      if(button_x==true)
+      {
+        Grabber.setVelocity(50,percent);
+        Grabber.spin(forward);
+      }
+      if(button_b==true)
+      {
+        Grabber.setVelocity(50,percent);
+        Grabber.spin(reverse);
+      }
+    }
+      else
+      {
+        Grabber.stop();
+      }
+
+    
+
+    wait(20, msec); // Sleep the task for a short amount of time to
+                    // prevent wasted resources.
+  }
+}
+
+//
+// Main will set up the competition functions and callbacks.
+//
+int main() {
+  // Set up callbacks for autonomous and driver control periods.
+  Competition.autonomous(autonomous);
+  Competition.drivercontrol(usercontrol);
+
+  // Run the pre-autonomous function.
+  pre_auton();
+
+  // Prevent main from exiting with an infinite loop.
+  while (true) {
+    wait(100, msec);
+  }
+}
